@@ -5,6 +5,7 @@ const appointmentModal = new mongoose.Schema({
     email: { type: String, required: true },
     phone: { type: String, required: true },
     date_time: { type: String, required: true },
+    status: { type: String, required: true },
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     specialization: { type: String, required: false },
     comments: { type: String, required: false },

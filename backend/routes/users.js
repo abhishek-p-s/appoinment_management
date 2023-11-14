@@ -220,6 +220,7 @@ router.post('/add-appointment', expressAsyncHandler(async (req, res) => {
       specialization: req.body.specialization,
       doctor: req.body.doctor,
       comments: req.body.docter,
+      status: 'In Progress',
       date_time: req.body.date_time,
     })
     const newAppointmentData = await newAppointment.save();
@@ -228,6 +229,23 @@ router.post('/add-appointment', expressAsyncHandler(async (req, res) => {
     res.status(400).send({ message: 'Some error occured' })
   }
 }))
+
+router.put('/appointment', utils.isAuth, expressAsyncHandler(async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.body.id);
+    if (appointment) {
+      appointment.status = req.body.status;
+      const updatedAppointment = await appointment.save();
+      res.send({ message: 'Appointment Status Updated', appointment: updatedAppointment });
+    } else {
+      res.status(404).send({ message: 'Appointment not found' });
+    }
+  } catch (error) {
+    console.error('Error updating appointment status:', error);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+}));
+
 
 router.get('/appointment', utils.isAuth, expressAsyncHandler(async (req, res) => {
   try {

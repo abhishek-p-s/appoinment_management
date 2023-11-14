@@ -1,13 +1,17 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import { Button, Layout } from '../../components';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import Loading from '../../components/LoadingAndError/Loading';
 import Error from '../../components/LoadingAndError/Error';
-import { Table } from 'antd';
+import { Modal, Select, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { useGetAppointmentQuery } from '../../redux/queries/appointment';
+import { useGetAppointmentQuery, useUpdateAppointmentMutation } from '../../redux/queries/appointment';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import useNotification from '../../components/notification/useNotification';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const breadCrumbs = [
   {
@@ -59,6 +63,16 @@ const columns: ColumnsType<DataType> = [
     dataIndex: 'date_time',
     key: 'date_time',
   },
+  {
+    title: <p className="text-primary">Status</p>,
+    dataIndex: 'status',
+    key: 'status',
+  },
+  {
+    title: <p className="text-primary">Action</p>,
+    dataIndex: 'action',
+    key: 'action',
+  },
 ];
 
 
@@ -70,11 +84,42 @@ const ApponitmentList: React.FC = () => {
     error,
   } = useGetAppointmentQuery('');
   const navigate = useNavigate();
+  const [modal2Open, setModal2Open] = useState(false);
+  const [updateAppointment] = useUpdateAppointmentMutation();
+  const { notify } = useNotification();
+  const [status, setStatus] = useState('');
+  const [appointmentId, setappoimentId] = useState('');
+  const { userDetails } = useSelector((state: RootState) => state.user);
+
+
+  const handleChangeStatus = async () => {
+    try {
+      const response: any = await updateAppointment({ status: status, id: appointmentId });
+      // console.log(response, 'RES')
+      if (response?.data?.message) {
+        notify({
+          type: 'success',
+          message: response?.data?.message,
+        });
+        setModal2Open(false)
+      }
+      if (response?.error) {
+        notify({
+          type: 'error',
+          message: response?.error?.data.message,
+        });
+      }
+    } catch (error: any) {
+      notify({
+        type: 'error',
+        message: error.message,
+      });
+    }
+  }
 
   const tableData = useMemo(() => {
     console.log(appointment, 'appointment?.data');
     if (appointment?.length > 0) {
-      console.log(appointment?.datam, 'appointment?.data');
       const updatedTableData = appointment?.map(
         (appoint: any, index: number) => {
           return {
@@ -85,7 +130,19 @@ const ApponitmentList: React.FC = () => {
               appoint?.doctor?.name,
             phone: appoint?.phone,
             email: appoint?.email,
-            date_time: moment(appoint?.date_time).format("MMMM Do YYYY, h:mm:ss a")
+            date_time: moment(appoint?.date_time).format("MMMM Do YYYY, h:mm:ss a"),
+            status: <Tag color={appoint?.status === 'In Progress' ? 'orange' : 'green'}>
+              {appoint?.status}
+            </Tag >,
+            action: < div>
+              {
+                userDetails.role === 2 &&
+                <div onClick={() => {
+                  setModal2Open(true);
+                  setappoimentId(appoint?._id)
+                }}><Icon icon="ep:edit" className="cursor-pointer" /></div>
+              }
+            </div>
           };
         }
       );
@@ -115,6 +172,32 @@ const ApponitmentList: React.FC = () => {
         </Fragment>
       )
       }
+      <Modal
+        title="Change status"
+        centered
+        open={modal2Open}
+        footer={null}
+        onCancel={() => setModal2Open(false)}
+      >
+        <Select
+          size="large"
+          onChange={(e) => {
+            console.log(e, 'E');
+            setStatus(e);
+          }}
+          options={[{
+            value: "In Progress",
+            label: 'In Progress'
+          }, {
+            value: "Completed",
+            label: "Completed"
+          }]}
+          className="w-full"
+        />
+        <div className="mt-5 flex justify-end w-full">
+          <Button title='Update' onClick={handleChangeStatus} />
+        </div>
+      </Modal>
     </Layout >
   );
 };

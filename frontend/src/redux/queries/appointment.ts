@@ -18,6 +18,15 @@ export const appointment = createApi({
       }),
       invalidatesTags: ['APPOINTMENT'],
     }),
+    updateAppointment: builder.mutation({
+      query: (formData) => ({
+        url: `users/appointment`,
+        method: 'PUT',
+        body: formData,
+        headers: getAuthHeaders(),
+      }),
+      invalidatesTags: ['APPOINTMENT'],
+    }),
     getDoctorData: builder.query({
       query: () => ({
         url: `users/doctors`,
@@ -47,4 +56,5 @@ export const {
   useGetDoctorDataQuery,
   useAddPatientMutation,
   useGetAppointmentQuery,
+  useUpdateAppointmentMutation,
 } = appointment;

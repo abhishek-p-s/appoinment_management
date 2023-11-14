@@ -111,7 +111,6 @@ const SidebarMenu: React.FC = () => {
               </li>
             );
           } else {
-            console.log(menu.user?.includes(Number(userDetails?.role)), "MENU")
             if (menu.user?.includes(Number(userDetails?.role))) {
               return;
             } else {
