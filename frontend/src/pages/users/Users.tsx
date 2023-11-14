@@ -5,9 +5,10 @@ import Loading from '../../components/LoadingAndError/Loading';
 import Error from '../../components/LoadingAndError/Error';
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { useGetDocterDataQuery } from '../../redux/queries/doctor';
+import { useDeleteUserMutation, useGetDocterDataQuery } from '../../redux/queries/doctor';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import useNotification from '../../components/notification/useNotification';
 
 const breadCrumbs = [
   {
@@ -70,7 +71,29 @@ const Users: React.FC = () => {
     error,
   } = useGetDocterDataQuery('');
   const navigate = useNavigate();
+  const [deleteUser] = useDeleteUserMutation();
+  const { notify } = useNotification();
 
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response: any = await deleteUser(id);
+      if (response?.data) {
+        notify({
+          type: 'success',
+          message: response?.data.message,
+        });
+      }
+      if (response?.error) {
+        notify({
+          type: 'error',
+          message: response?.error?.data.message,
+        });
+      }
+    } catch (error) {
+
+    }
+  }
 
   const tableData = useMemo(() => {
     console.log(users, 'users?.data');
@@ -86,7 +109,14 @@ const Users: React.FC = () => {
               user?.role?.name,
             phone: user?.phone,
             email: user?.email,
-            action: <div><Icon icon="ep:edit" className="cursor-pointer" /></div>
+            action: <div className='flex'>
+              <div onClick={() => {
+                navigate(`/edit-user/${user._id}`)
+              }}><Icon icon="ep:edit" className="cursor-pointer" /></div>
+              <div onClick={() => {
+                handleDelete(user._id)
+              }} className="mx-5" > <Icon icon="mdi:delete-outline" className="cursor-pointer w-4 h-4" /></div>
+            </div >
           };
         }
       );

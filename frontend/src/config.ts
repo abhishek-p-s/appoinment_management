@@ -21,14 +21,14 @@ const config = {
       name: 'Docter',
       page_access: [
         'docter',
-        'apponitment'
+        'apponitment',
+        'patient',
       ],
     },
     {
       id: 3,
       name: 'Patient',
       page_access: [
-        'patient',
         'apponitment'
       ],
     }

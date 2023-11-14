@@ -30,6 +30,31 @@ export const doctor = createApi({
       }),
       providesTags: ['ROLE'],
     }),
+    editUser: builder.query({
+      query: (id) => ({
+        url: `users/user/${id}`,
+        headers: getAuthHeaders(),
+      }),
+      providesTags: ['USER'],
+    }),
+    updateUser: builder.mutation({
+      query: (formData) => ({
+        url: `users/user`,
+        method: 'PUT',
+        body: formData,
+        headers: getAuthHeaders(),
+      }),
+      invalidatesTags: ['USER'],
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `users/user/${id}`,
+        method: 'DELETE',
+        body: id,
+        headers: getAuthHeaders(),
+      }),
+      invalidatesTags: ['USER'],
+    }),
   addUser: builder.mutation({
       query: (formData) => ({
         url: `users/add-user`,
@@ -47,4 +72,7 @@ export const {
   useGetRoleDataQuery,
   useAddUserMutation,
   useGetPatientsQuery,
+  useEditUserQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
 } = doctor;

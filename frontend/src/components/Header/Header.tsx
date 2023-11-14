@@ -1,7 +1,8 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setToggle } from '../../redux/slices/sidebarTogle';
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
+import { RootState } from '../../redux/store';
 
 type HeaderProps = {
   isSidbarNotRequired?: boolean;
@@ -13,11 +14,11 @@ const Header: React.FC<HeaderProps> = ({
   isLogin
 }) => {
   const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.user);
 
   const handleOpenSidebar = () => {
     dispatch(setToggle(true));
   };
-
   return (
     <nav
       className={`md:w-[1fr] ${isSidbarNotRequired ? 'w-full bg-secondary' : 'md:ml-[300px] bg-white'
@@ -46,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
               <div
                 className="w-[100px] mx-4 p-4 hover:scale-110 hover:duration-300 bg-white cursor-pointer rounded-xl flex justify-center border-primary md:border-white border-[1px]"
               >
-                Login
+                {token ? 'Home' : 'Login'}
               </div>
             </Link>
             <Link to='/signup' className='text-primary' >

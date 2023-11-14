@@ -52,8 +52,10 @@ function RouteList() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/new-join" element={<Login />} />
 
+        <Route path="/home" element={<Private element={Home} alias="home" />} />
         <Route path="/user-list" element={<Private element={DocterList} alias="docter" />} />
         <Route path="/add-user" element={<Private element={AddDocter} alias="docter" />} />
+        <Route path="/edit-user/:id" element={<Private element={AddDocter} alias="docter" />} />
         <Route path="/patients" element={<Private element={PatientList} alias="patient" />} />
         <Route path="/appoinments-list" element={<Private element={ApponitmentList} alias="apponitment" />} />
       </Routes>

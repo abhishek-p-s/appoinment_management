@@ -2,15 +2,15 @@
 export const menuList = [
   {
     name: 'Dashboard',
-    key: '/',
+    key: '/home',
     icon: 'iwwa:dashboard',
-    user: [],
+    user: [3, 2],
   },
   {
     name: 'Users',
     key: '/user-list',
     icon: 'la:users-cog',
-    user: [],
+    user: [3, 2],
   },
   {
     name: 'Patients',

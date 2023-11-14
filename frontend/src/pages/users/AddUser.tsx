@@ -1,12 +1,12 @@
-import React, { ChangeEvent, Fragment, useMemo, useRef, useState } from 'react';
+import React, { ChangeEvent, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, InputField, Layout } from '../../components';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import { Col, Row, Select, Form } from 'antd';
-import { useAddUserMutation, useGetRoleDataQuery } from '../../redux/queries/doctor';
+import { useAddUserMutation, useEditUserQuery, useGetRoleDataQuery, useUpdateUserMutation } from '../../redux/queries/doctor';
 import Loading from '../../components/LoadingAndError/Loading';
 import Error from '../../components/LoadingAndError/Error';
 import { createSelectOption } from '../../helpers';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useNotification from '../../components/notification/useNotification';
 
 const breadCrumbs = [
@@ -29,6 +29,7 @@ type FieldType = {
 
 
 const AddUser: React.FC = () => {
+  const { id } = useParams();
   const {
     data: roles,
     isLoading,
@@ -46,6 +47,10 @@ const AddUser: React.FC = () => {
     }
   }, [roles]);
   const [addUser] = useAddUserMutation()
+  const {
+    data: edituser,
+  } = useEditUserQuery(id);
+  const [updateUser] = useUpdateUserMutation()
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
@@ -61,28 +66,65 @@ const AddUser: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    form.setFieldsValue({
+      name: edituser?.name,
+      email: edituser?.email,
+      phone: edituser?.phone,
+      role: edituser?.role,
+      specialization: edituser?.specialization
+    });
+
+  }, [edituser])
+
   const onFinish = async (values: FieldType) => {
     try {
-      const formData = new FormData();
-      Object.keys(values as FieldType)?.map((key: any) => {
-        const value = values[key as keyof FieldType];
-        formData.append(key, value)
-      })
-      formData.append("image", file as Blob);
-      const response: any = await addUser(formData);
-      console.log(response, 'response');
-      if (response?.data) {
-        notify({
-          type: 'success',
-          message: response?.data.message,
-        });
-        form.resetFields();
-      }
-      if (response?.error) {
-        notify({
-          type: 'error',
-          message: response?.error?.data.message,
-        });
+      if (id) {
+        const formData = new FormData();
+        Object.keys(values as FieldType)?.map((key: any) => {
+          const value = values[key as keyof FieldType];
+          formData.append(key, value)
+        })
+        formData.append("image", file as Blob);
+        formData.append("id", id);
+        const response: any = await updateUser(formData);
+        console.log(response, 'response');
+        if (response?.data) {
+          notify({
+            type: 'success',
+            message: response?.data.message,
+          });
+          navigate('/user-list')
+          form.resetFields();
+        }
+        if (response?.error) {
+          notify({
+            type: 'error',
+            message: response?.error?.data.message,
+          });
+        }
+      } else {
+        const formData = new FormData();
+        Object.keys(values as FieldType)?.map((key: any) => {
+          const value = values[key as keyof FieldType];
+          formData.append(key, value)
+        })
+        formData.append("image", file as Blob);
+        const response: any = await addUser(formData);
+        console.log(response, 'response');
+        if (response?.data) {
+          notify({
+            type: 'success',
+            message: response?.data.message,
+          });
+          form.resetFields();
+        }
+        if (response?.error) {
+          notify({
+            type: 'error',
+            message: response?.error?.data.message,
+          });
+        }
       }
       console.log(values, 'VALUES');
     } catch (error: any) {

@@ -1,5 +1,5 @@
 import React, { Fragment, useMemo } from 'react';
-import { Layout } from '../../components';
+import { Button, Layout } from '../../components';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import Loading from '../../components/LoadingAndError/Loading';
 import Error from '../../components/LoadingAndError/Error';
@@ -7,6 +7,7 @@ import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { useGetAppointmentQuery } from '../../redux/queries/appointment';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const breadCrumbs = [
   {
@@ -68,6 +69,7 @@ const ApponitmentList: React.FC = () => {
     isError,
     error,
   } = useGetAppointmentQuery('');
+  const navigate = useNavigate();
 
   const tableData = useMemo(() => {
     console.log(appointment, 'appointment?.data');
@@ -100,6 +102,11 @@ const ApponitmentList: React.FC = () => {
         <Error description={error} />
       ) : (
         <Fragment>
+          <div className="flex justify-end mb-4">
+            <Button title='Add Appointment' className="bg-primary text-white" onClick={() => {
+              navigate('/')
+            }} />
+          </div>
           <div className="border-[1px] p-3 bg-[#F3F3F3] rounded-md flex md:flex-row flex-col">
             <div className="w-full overflow-y-auto md:mx-4 sm:mt-5">
               <Table columns={columns} dataSource={tableData} />

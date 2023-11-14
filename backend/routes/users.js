@@ -35,9 +35,20 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/seed', expressAsyncHandler(async (req, res) => {
-  const createdUsers = await User.insertMany(data.users);
   const createdRoles = await Role.insertMany(data.roles);
-  res.send({ createdUsers, createdRoles });
+
+  const user = data.users[0]
+  const adminRole = await Role.findOne({ name: 'Admin' });
+  const newUser = new User({
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    specialization: user.specialization,
+    password: bcrypt.hashSync(user.password, 8),//will create a default password later user can change that
+    role: adminRole._id,
+  })
+  const createdUser = await newUser.save();
+  res.send({ createdUser, createdRoles });
 }))
 
 router.post('/signin', expressAsyncHandler(async (req, res) => {
@@ -132,6 +143,42 @@ router.get('/user/:id', utils.isAuth, expressAsyncHandler(async (req, res) => {
   }
 }))
 
+router.put('/user', upload.array('image', 6), utils.isAuth, expressAsyncHandler(async (req, res) => {
+  const reqFiles = [];
+  const url = req.protocol + '://' + req.get('host')
+  for (var i = 0; i < req.files.length; i++) {
+    reqFiles.push(url + "/images/" + req.files[i].filename);
+  }
+  const user = await User.findById({ _id: req.body.id })
+  if (user) {
+    if (reqFiles[0]) {
+      user.name = req.body.name,
+        user.email = req.body.email,
+        user.phone = req.body.phone,
+        user.role = req.body.role,
+        user.image = reqFiles
+      user.specialization = req.body.specialization
+    } else {
+      user.name = req.body.name,
+        user.email = req.body.email,
+        user.phone = req.body.phone,
+        user.role = req.body.role,
+        user.specialization = req.body.specialization
+    }
+  }
+  const userData = await user.save();
+  res.send({ message: "User Updated", user: userData })
+}))
+
+router.delete('/user/:id', expressAsyncHandler(async (req, res) => {
+  const data = await User.findByIdAndDelete(req.params.id);
+  if (data) {
+    res.status(200).send({ message: 'User deleted' })
+  } else {
+    res.status(200).send({ message: 'not fouund' })
+  }
+}))
+
 router.get('/doctors', expressAsyncHandler(async (req, res) => {
   try {
     const doctorRole = await Role.findOne({ name: 'Doctor' });
@@ -184,8 +231,16 @@ router.post('/add-appointment', expressAsyncHandler(async (req, res) => {
 
 router.get('/appointment', utils.isAuth, expressAsyncHandler(async (req, res) => {
   try {
-    console.log(req.user, 'USER DETAILS*****');
-    const appoinment = await Appointment.find({ email: req.user.email }).populate('doctor');
+    console.log(req.user.role.id === 3, 'USER DETAILS*****');
+    let appoinment = [];
+    if (req.user.role.id === 1) {
+      appoinment = await Appointment.find({}).populate('doctor');
+    } else if (req.user.role.id == 3) {
+      appoinment = await Appointment.find({ email: req.user.email }).populate('doctor');
+    } else {
+      appoinment = await Appointment.find({ doctor: req.user._id }).populate('doctor');
+    }
+    // const appoinment = await Appointment.find({ email: req.user.email }).populate('doctor');
     res.status(200).send(appoinment)
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' });

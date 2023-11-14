@@ -5,17 +5,10 @@ const data = {
     users: [{
         name: "admin",
         email: "admin@gmail.com",
-        password: bcrypt.hashSync('123', 8),
+        password: '123',
         phone: "6282952623",
         role: 1
     },
-    {
-        name: "docter",
-        email: "docter@gmail.com",
-        password: bcrypt.hashSync('123', 8),
-        phone: "6282952623",
-        role: 2
-    }
     ],
     roles: [
         {

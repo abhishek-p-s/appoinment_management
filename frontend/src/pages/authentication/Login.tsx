@@ -37,7 +37,7 @@ const Login: React.FC = () => {
   };
   useEffect(() => {
     if (token) {
-      navigate('/patients');
+      navigate('/appoinments-list');
     }
   }, [navigate, token]);
 
@@ -86,6 +86,15 @@ const Login: React.FC = () => {
                 htmlType="submit"
                 title="Login"
                 className="w-full mt-3 hover:text-white bg-primary text-white"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                title="Book Now"
+                onClick={() => {
+                  navigate('/')
+                }}
+                className="w-full mt-3 hover:text-white bg-green-500 text-white"
               />
             </Form.Item>
           </Form>

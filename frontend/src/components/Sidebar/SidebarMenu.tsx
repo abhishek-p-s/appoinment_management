@@ -111,8 +111,11 @@ const SidebarMenu: React.FC = () => {
               </li>
             );
           } else {
-            menu.user?.includes(Number(userDetails?.role)) ? null :
-              <li
+            console.log(menu.user?.includes(Number(userDetails?.role)), "MENU")
+            if (menu.user?.includes(Number(userDetails?.role))) {
+              return;
+            } else {
+              return (<li
                 key={menu.key}
                 onClick={() => {
                   handleActiveMenu(menu.key);
@@ -129,7 +132,8 @@ const SidebarMenu: React.FC = () => {
                     <span className="mx-3">{menu.name}</span>
                   </div>
                 </Link>
-              </li>
+              </li>)
+            }
           }
         })}
       </ul>

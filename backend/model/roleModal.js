@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 const roleModal = new mongoose.Schema({
     id: { type: Number, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
 }, {
     timestamps: true
 })
