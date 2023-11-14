@@ -82,7 +82,7 @@ const SidebarMenu: React.FC = () => {
                   <ul className="ml-5 leading-[2rem] ease-in-out duration-300">
                     {menu.children
                       .filter(
-                        (sub) => !sub.user.includes(Number(userDetails?.roleId))
+                        (sub) => !sub.user.includes(Number(userDetails?.role))
                       )
                       .map((subMenu) => {
                         return (
@@ -111,7 +111,7 @@ const SidebarMenu: React.FC = () => {
               </li>
             );
           } else {
-            return (
+            menu.user?.includes(Number(userDetails?.role)) ? null :
               <li
                 key={menu.key}
                 onClick={() => {
@@ -130,7 +130,6 @@ const SidebarMenu: React.FC = () => {
                   </div>
                 </Link>
               </li>
-            );
           }
         })}
       </ul>

@@ -6,9 +6,12 @@ import {
   Navigate,
 } from 'react-router-dom';
 import {
+  AddDocter,
+  DocterList,
   Home,
-  Login
-} from '../pages/index';
+  Login,
+  PatientList
+} from '../pages';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import config, { Role } from '../config';
@@ -44,6 +47,11 @@ function RouteList() {
         <Route path="/" element={<Private element={Home} alias="home" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/new-join" element={<Login />} />
+
+        <Route path="/user-list" element={<Private element={DocterList} alias="docter" />} />
+        <Route path="/add-user" element={<Private element={AddDocter} alias="docter" />} />
+
+        <Route path="/patients" element={<Private element={PatientList} alias="patient" />} />
       </Routes>
     </Router>
   );

@@ -4,95 +4,35 @@ export const menuList = [
     name: 'Dashboard',
     key: '/',
     icon: 'iwwa:dashboard',
+    user: [2],
   },
   {
-    name: 'Doctors',
-    key: 'timesheet',
-    icon: 'simple-line-icons:graduation',
-    children: [
-      {
-        name: 'Fill timesheet',
-        key: '/fill-timesheet',
-        user: [],
-      },
-      {
-        name: 'View timesheet',
-        key: '/view-timesheet',
-        user: [],
-      },
-      {
-        name: 'Approval',
-        key: '/approve-timesheet',
-        user: [4], //This route won't show for the user id 4
-      },
-      {
-        name: 'Missing Timesheet-Reportees',
-        key: '/pending-timesheet',
-        user: [4],
-      },
-    ],
+    name: 'Users',
+    key: '/user-list',
+    icon: 'la:users-cog',
   },
   {
     name: 'Patients',
-    key: 'leave',
+    key: 'patients',
     icon: 'mdi:patient-outline',
+    user: [2,3],
     children: [
       {
-        name: 'Leave Request',
-        key: '/leave-request',
-        user: [],
-      },
-      {
-        name: 'Leave History',
-        key: '/leave-history',
-        user: [],
-      },
-      {
-        name: 'SOP Leave',
-        key: '/sop-leave',
-        user: [],
-      },
-      {
-        name: 'Holiday List',
-        key: '/holiday-list',
-        user: [],
-      },
-      {
-        name: 'Approval',
-        key: '/approval-list',
-        user: [4],
-      },
-      {
-        name: 'Leave List',
-        key: '/leave-list',
-        user: [],
+        name: 'Patients List',
+        key: '/patients',
+        user: [2,3],
       },
     ],
   },
   {
     name: 'appointments',
-    key: 'travel',
+    key: 'appointments',
     icon: 'streamline:open-book',
     children: [
       {
-        name: 'Request',
-        key: '/travel-request',
+        name: 'Appoinments List',
+        key: '/appoinments-list',
         user: [],
-      },
-      {
-        name: 'History',
-        key: '/travel-history',
-        user: [],
-      },
-      {
-        name: 'Approval',
-        key: '/travel-approval',
-        user: [4],
-      },
-      {
-        name: 'Policy',
-        key: '/travel-policy',
-        user: [4],
       },
     ],
   },

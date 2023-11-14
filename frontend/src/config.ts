@@ -11,17 +11,23 @@ const config = {
       name: 'Admin',
       page_access: [
         'home',
+        'docter',
+        'patient',
       ],
     },
     {
       id: 2,
       name: 'Docter',
-      page_access: [],
+      page_access: [
+        'docter',
+      ],
     },
     {
       id: 3,
       name: 'Patient',
-      page_access: [],
+      page_access: [
+        'patient',
+      ],
     }
   ] as Role[],
   checkAccess: (role: any, page: string) => {

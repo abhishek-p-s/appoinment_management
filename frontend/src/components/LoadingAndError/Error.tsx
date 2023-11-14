@@ -10,7 +10,7 @@ const Error: React.FC<Error> = ({ description }) => {
     <Space direction="vertical" style={{ width: '100%' }} className="mt-5">
       <Alert
         message={`Error ${description?.status}`}
-        description={description?.data?.errors[0]?.msg}
+        description={description?.data?.msg}
         type="error"
         showIcon
       />
