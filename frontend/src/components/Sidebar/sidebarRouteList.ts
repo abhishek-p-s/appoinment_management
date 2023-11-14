@@ -4,25 +4,19 @@ export const menuList = [
     name: 'Dashboard',
     key: '/',
     icon: 'iwwa:dashboard',
-    user: [2],
+    user: [],
   },
   {
     name: 'Users',
     key: '/user-list',
     icon: 'la:users-cog',
+    user: [],
   },
   {
     name: 'Patients',
-    key: 'patients',
+    key: '/patients',
     icon: 'mdi:patient-outline',
-    user: [2,3],
-    children: [
-      {
-        name: 'Patients List',
-        key: '/patients',
-        user: [2,3],
-      },
-    ],
+    user: [3],
   },
   {
     name: 'appointments',

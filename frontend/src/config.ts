@@ -13,6 +13,7 @@ const config = {
         'home',
         'docter',
         'patient',
+        'apponitment'
       ],
     },
     {
@@ -20,6 +21,7 @@ const config = {
       name: 'Docter',
       page_access: [
         'docter',
+        'apponitment'
       ],
     },
     {
@@ -27,6 +29,7 @@ const config = {
       name: 'Patient',
       page_access: [
         'patient',
+        'apponitment'
       ],
     }
   ] as Role[],

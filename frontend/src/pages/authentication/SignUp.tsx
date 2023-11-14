@@ -2,44 +2,44 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginPageImage from '../../assets/loginPageImage.webp';
 import { InputField, Button } from '../../components/index';
 import { Form } from 'antd';
-import api from '../../services/service';
 import useAlerts from '../../components/notification/useAlerts';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../redux/slices/userAuth';
-import { useEffect } from 'react';
-import { RootState } from '../../redux/store';
+import { useAddPatientMutation } from '../../redux/queries/appointment';
 
 type FieldType = {
   email: string;
   password: string;
+  name: string;
+  phone: string;
+  confirm_password: string;
 };
 
-const Login: React.FC = () => {
-  const { token } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
+const SignUp: React.FC = () => {
+  const [addPatient] = useAddPatientMutation();
   const navigate = useNavigate();
   const { alert } = useAlerts();
 
   const onFinish = async (values: FieldType) => {
     try {
-      const responce = await api.post('users/signin', values);
-      if (responce.data) {
-        dispatch(setUser(responce.data));
-        navigate('/home');
+      if (values.password === values.confirm_password) {
+        const responce: any = await addPatient(values);
+        if (responce.data) {
+          navigate('/login');
+        }
+      } else {
+        alert({
+          type: 'error',
+          message: 'Signup',
+          description: 'Mismatch in password',
+        });
       }
     } catch (error: any) {
       alert({
         type: 'error',
-        message: 'Login',
+        message: 'Signup',
         description: error?.response?.data?.message,
       });
     }
   };
-  useEffect(() => {
-    if (token) {
-      navigate('/patients');
-    }
-  }, [navigate, token]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -57,6 +57,18 @@ const Login: React.FC = () => {
         <div className="w-2/3">
           <Form onFinish={onFinish}>
             <Form.Item<FieldType>
+              name="name"
+              rules={[
+                { required: true, message: 'Please input your name!' },
+              ]}
+            >
+              <InputField
+                type="text"
+                placeHolder="name"
+                className="h-[3rem]"
+              />
+            </Form.Item>
+            <Form.Item<FieldType>
               name="email"
               rules={[
                 { required: true, message: 'Please input your email!' },
@@ -68,7 +80,18 @@ const Login: React.FC = () => {
                 className="h-[3rem]"
               />
             </Form.Item>
-
+            <Form.Item<FieldType>
+              name="phone"
+              rules={[
+                { required: true, message: 'Please input your phone!' },
+              ]}
+            >
+              <InputField
+                type="text"
+                placeHolder="phone"
+                className="h-[3rem]"
+              />
+            </Form.Item>
             <Form.Item<FieldType>
               name="password"
               rules={[
@@ -81,17 +104,29 @@ const Login: React.FC = () => {
                 className="mt-3 h-[3rem]"
               />
             </Form.Item>
+            <Form.Item<FieldType>
+              name="confirm_password"
+              rules={[
+                { required: true, message: 'Please input your password!' },
+              ]}
+            >
+              <InputField
+                type="password"
+                placeHolder="Confirm password"
+                className="mt-3 h-[3rem]"
+              />
+            </Form.Item>
             <Form.Item>
               <Button
                 htmlType="submit"
-                title="Login"
+                title="Signup"
                 className="w-full mt-3 hover:text-white bg-primary text-white"
               />
             </Form.Item>
           </Form>
           <div className="mt-5">
-            <Link to="/signup" className="text-blue-800">
-              Create a account?
+            <Link to="/login" className="text-blue-800">
+              Already a account?
             </Link>
           </div>
         </div>
@@ -100,4 +135,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default SignUp;

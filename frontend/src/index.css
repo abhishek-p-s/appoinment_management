@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:where(.css-dev-only-do-not-override-txh9fw).ant-steps .ant-steps-item-process .ant-steps-item-icon {
+    background-color: #25408F;
+    border-color: #25408F;
+  }
+
+  :where(.css-dev-only-do-not-override-1adbn6x).ant-btn.ant-btn-sm {
+    font-size: 14px;
+    height: 24px;
+    padding: 0px 7px;
+    border-radius: 4px;
+    background: blue;
+    color: #ffff;
+}

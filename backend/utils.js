@@ -1,4 +1,5 @@
 var jwt = require("jsonwebtoken");
+const User = require("./model/userModal");
 
 const generateToken = (user) => {
     return jwt.sign({
@@ -17,12 +18,18 @@ const isAuth = (req, res, next) => {
     if (authorization) {
         const token = authorization.slice(7, authorization.length)
         //console.log(token)
-        jwt.verify(token, process.env.JWT_SECRET || 'secretkey', (err, decode) => {
+        jwt.verify(token, process.env.JWT_SECRET || 'secretkey', async (err, decode) => {
             if (err) {
                 res.status(401).send({ message: 'Invalid Token' })
             } else {
                 req.user = decode;
-                next()
+                const user = await User.findById(decode._id).populate("role")
+                if (user) {
+                    req.user = user;
+                    next()
+                } else {
+                    res.status(404).send({ message: "User Not Found" })
+                }
             }
         })
     } else {

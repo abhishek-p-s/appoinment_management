@@ -5,7 +5,8 @@ var bcrypt = require("bcryptjs");
 var utils = require("../utils.js")
 var data = require("../data.js");
 const Role = require('../model/roleModal.js');
-const multer = require('multer')
+const multer = require('multer');
+const Appointment = require('../model/appointmentModal.js');
 var router = express.Router();
 
 var storage = multer.diskStorage({
@@ -84,6 +85,26 @@ router.post('/add-user', utils.isAuth, upload.array('image', 6), expressAsyncHan
   }
 }))
 
+//add patients
+router.post('/add-patients', expressAsyncHandler(async (req, res) => {
+  try {
+    const patientRole = await Role.findOne({ name: 'Patient' });
+    // If the role is found, fetch users with that role ID
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      specialization: req.body.specialization,
+      password: bcrypt.hashSync(req.body.password, 8),
+      role: patientRole._id,
+    })
+    const createdUser = await newUser.save();
+    res.status(200).send({ message: 'New patients created' })
+  } catch (error) {
+    res.status(400).send({ message: 'Some error occured' })
+  }
+}))
+
 router.get('/users', utils.isAuth, expressAsyncHandler(async (req, res) => {
   const user = await User.find({}).populate('role')
   if (user) {
@@ -111,7 +132,7 @@ router.get('/user/:id', utils.isAuth, expressAsyncHandler(async (req, res) => {
   }
 }))
 
-router.get('/doctor', utils.isAuth, expressAsyncHandler(async (req, res) => {
+router.get('/doctors', expressAsyncHandler(async (req, res) => {
   try {
     const doctorRole = await Role.findOne({ name: 'Doctor' });
     // If the role is found, fetch users with that role ID
@@ -136,6 +157,36 @@ router.get('/patients', utils.isAuth, expressAsyncHandler(async (req, res) => {
     } else {
       res.status(404).json({ message: 'Patients Role Not Found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}))
+
+
+//appoinment section
+router.post('/add-appointment', expressAsyncHandler(async (req, res) => {
+  try {
+    const newAppointment = new Appointment({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      specialization: req.body.specialization,
+      doctor: req.body.doctor,
+      comments: req.body.docter,
+      date_time: req.body.date_time,
+    })
+    const newAppointmentData = await newAppointment.save();
+    res.status(200).send({ message: 'New appointment created' })
+  } catch (error) {
+    res.status(400).send({ message: 'Some error occured' })
+  }
+}))
+
+router.get('/appointment', utils.isAuth, expressAsyncHandler(async (req, res) => {
+  try {
+    console.log(req.user, 'USER DETAILS*****');
+    const appoinment = await Appointment.find({ email: req.user.email }).populate('doctor');
+    res.status(200).send(appoinment)
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' });
   }

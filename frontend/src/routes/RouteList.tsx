@@ -7,10 +7,13 @@ import {
 } from 'react-router-dom';
 import {
   AddDocter,
+  ApponitmentList,
   DocterList,
+  GustUserPage,
   Home,
   Login,
-  PatientList
+  PatientList,
+  Signup
 } from '../pages';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -44,14 +47,15 @@ function RouteList() {
     <Router>
       <Routes>
         {/* <Route path="*" element={<Navigate replace to="/not-found" />} /> */}
-        <Route path="/" element={<Private element={Home} alias="home" />} />
+        <Route path="/" element={<GustUserPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/new-join" element={<Login />} />
 
         <Route path="/user-list" element={<Private element={DocterList} alias="docter" />} />
         <Route path="/add-user" element={<Private element={AddDocter} alias="docter" />} />
-
         <Route path="/patients" element={<Private element={PatientList} alias="patient" />} />
+        <Route path="/appoinments-list" element={<Private element={ApponitmentList} alias="apponitment" />} />
       </Routes>
     </Router>
   );
