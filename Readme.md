@@ -26,6 +26,8 @@ Frontend
 username: admin@gmail.com
 password: 123
 
+using admin we can create doctor, patients and all.
+
 When creating a user the backend will default create a password and later the user can change once they are login
 Backend default password: p@ssw0rd;
 
